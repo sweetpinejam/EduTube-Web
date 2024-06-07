@@ -8,6 +8,7 @@ from email.mime.multipart import MIMEMultipart
 
 # Set the dark theme and page config
 st.set_page_config(page_title="EduTube Demo", layout="centered", initial_sidebar_state="collapsed")
+tags = []
 
 # Apply custom CSS for dark theme and brighter headers
 st.markdown("""
@@ -131,16 +132,20 @@ def main():
         # Display the main content if the user is logged in
         if st.session_state.is_logged_in:
             st.title("Educational Video Recommendation")
-            selected_tag = st.selectbox("Choose an educational tag:", generate_tags())
-            videos = search_videos(selected_tag)
-            st.header(f"Suggested Videos for '{selected_tag}':")
-            for video in videos:
-                video_title = video['snippet']['title']
-                video_id = video['id']['videoId']
-                video_url = f"https://www.youtube.com/watch?v={video_id}"
+            global tags
+            if st.button('Generate tags'):
+                tags = generate_tags()
+            if len(tags) > 0:
+                selected_tag = st.selectbox("Choose an educational tag:", tags)
+                videos = search_videos(selected_tag)
+                st.header(f"Suggested Videos for '{selected_tag}':")
+                for video in videos:
+                    video_title = video['snippet']['title']
+                    video_id = video['id']['videoId']
+                    video_url = f"https://www.youtube.com/watch?v={video_id}"
 
-                st.subheader(video_title)
-                st.video(video_url)
+                    st.subheader(video_title)
+                    st.video(video_url)
 
             deep_search()
 
