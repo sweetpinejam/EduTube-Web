@@ -119,7 +119,7 @@ def main():
 
     if page == "Home":
         st.title("EduTube Demo")
-        st.write(f"Active users: {st.session_state.active_users} from Maximum {st.secrets['max_user']}")
+        st.write(f" Maximum User is {st.secrets['max_user']}. We're Trying Survey and Increase APIs Limit")
 
         # Initialize session state if it doesn't exist
         if 'is_logged_in' not in st.session_state:
