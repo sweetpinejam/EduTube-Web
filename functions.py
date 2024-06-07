@@ -27,9 +27,9 @@ def generate_tags():
                 model="command-nightly",
                 prompt=prompt,
                 max_tokens=50,
-                temperature=0.8
+                temperature=1.0
             )
-            response.generations[0].text.split(', ')
+            n_tags = response.generations[0].text.split(', ')
         except Exception:
             st.error("Exceed LLMs APIs Limit. Please Wait for a minute.")
     finally:

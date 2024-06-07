@@ -8,7 +8,6 @@ from email.mime.multipart import MIMEMultipart
 
 # Set the dark theme and page config
 st.set_page_config(page_title="EduTube Demo", layout="centered", initial_sidebar_state="collapsed")
-tags = []
 
 # Apply custom CSS for dark theme and brighter headers
 st.markdown("""
@@ -75,6 +74,9 @@ if 'is_logged_in' not in st.session_state:
 if 'active_users' not in st.session_state:
     st.session_state.active_users = 0
 
+if 'tags' not in st.session_state:
+    st.session_state.tags = []
+
 # Function to handle login
 def login():
     if st.session_state.active_users < st.secrets["max_user"]:
@@ -121,10 +123,6 @@ def main():
         st.title("EduTube Demo")
         st.write(f" Maximum User is {st.secrets['max_user']}. We're Trying Survey and Increase APIs Limit")
 
-        # Initialize session state if it doesn't exist
-        if 'is_logged_in' not in st.session_state:
-            st.session_state.is_logged_in = False
-
         # Display the login button if the user is not logged in
         if not st.session_state.is_logged_in:
             st.button("Enter the Demo EduTube Website", on_click=login)
@@ -132,20 +130,22 @@ def main():
         # Display the main content if the user is logged in
         if st.session_state.is_logged_in:
             st.title("Educational Video Recommendation")
-            global tags
-            if st.button('Generate tags'):
-                tags = generate_tags()
-            if len(tags) > 0:
-                selected_tag = st.selectbox("Choose an educational tag:", tags)
-                videos = search_videos(selected_tag)
-                st.header(f"Suggested Videos for '{selected_tag}':")
-                for video in videos:
-                    video_title = video['snippet']['title']
-                    video_id = video['id']['videoId']
-                    video_url = f"https://www.youtube.com/watch?v={video_id}"
 
-                    st.subheader(video_title)
-                    st.video(video_url)
+            if st.button('Generate tags'):
+                st.session_state.tags = generate_tags()
+
+            if st.session_state.tags:
+                selected_tag = st.selectbox("Choose an educational tag:", st.session_state.tags)
+                if selected_tag:
+                    videos = search_videos(selected_tag)
+                    st.header(f"Suggested Videos for '{selected_tag}':")
+                    for video in videos:
+                        video_title = video['snippet']['title']
+                        video_id = video['id']['videoId']
+                        video_url = f"https://www.youtube.com/watch?v={video_id}"
+
+                        st.subheader(video_title)
+                        st.video(video_url)
 
             deep_search()
 
